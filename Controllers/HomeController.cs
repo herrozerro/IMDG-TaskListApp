@@ -5,13 +5,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using IMDG_TaskListApp.Models;
+using Microsoft.EntityFrameworkCore;
+using IMDG_TaskListApp.Repos;
 
 namespace IMDG_TaskListApp.Controllers
 {
     public class HomeController : Controller
     {
+        private TaskListContext _taskListContext = null;
+        public HomeController(TaskListContext taskListContext)
+        {
+            _taskListContext = taskListContext;
+        }
+
         public IActionResult Index()
         {
+            _taskListContext.TaskLists.Add(new TaskList(){Name = "test"});
+            _taskListContext.SaveChanges();
             return View();
         }
 

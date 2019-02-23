@@ -5,10 +5,9 @@ namespace IMDG_TaskListApp.Repos
 {
     public class TaskListContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source=database.db");
-        }
+        public TaskListContext(DbContextOptions<TaskListContext> options)
+            : base(options)
+        { }
 
         public DbSet<TaskItem> TaskItems {get;set;}
         public DbSet<TaskList> TaskLists {get;set;}

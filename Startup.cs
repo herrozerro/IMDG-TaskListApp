@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using IMDG_TaskListApp.Repos;
 
 namespace IMDG_TaskListApp
 {
@@ -30,6 +32,10 @@ namespace IMDG_TaskListApp
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddDbContext<TaskListContext>(options=>
+                options.UseSqlite(Configuration["SqliteDatabase"])
+            );
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
