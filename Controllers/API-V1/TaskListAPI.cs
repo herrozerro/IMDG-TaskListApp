@@ -22,7 +22,7 @@ namespace IMDG_TaskListApp.Controllers.API
 
         
         [HttpGet]
-        public async Task<ActionResult<TaskList>> GetTaskLists()
+        public async Task<ActionResult<List<TaskList>>> GetTaskLists()
         {
             var lists = await _taskListContext.TaskLists
                                                 .Include(x=>x.Items)
@@ -32,7 +32,7 @@ namespace IMDG_TaskListApp.Controllers.API
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskList>> GetTaskList([FromQuery] int id)
+        public async Task<ActionResult<TaskList>> GetTaskList(int id)
         {
             var list = await _taskListContext.TaskLists
                                                 .Include(x=>x.Items)
@@ -41,7 +41,35 @@ namespace IMDG_TaskListApp.Controllers.API
             return Ok(list);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> PostTaskList([FromBody] TaskList taskList)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest("Error in model.");
+            }
 
+            await _taskListContext.TaskLists.AddAsync(taskList);
+
+            await _taskListContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutTaskList([FromBody] TaskList taskList)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest("Error in model.");
+            }
+
+            _taskListContext.Attach(taskList);
+
+            await _taskListContext.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 
 }
