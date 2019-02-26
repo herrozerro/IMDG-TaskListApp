@@ -21,7 +21,7 @@ namespace IMDG_TaskListApp.Controllers.API
         }
 
         
-        [HttpGet]
+        [HttpGet("tasklists")]
         public async Task<ActionResult<List<TaskList>>> GetTaskLists()
         {
             var lists = await _taskListContext.TaskLists
@@ -31,7 +31,7 @@ namespace IMDG_TaskListApp.Controllers.API
             return Ok(lists);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("tasklists/{id}")]
         public async Task<ActionResult<TaskList>> GetTaskList(int id)
         {
             var list = await _taskListContext.TaskLists
@@ -41,7 +41,7 @@ namespace IMDG_TaskListApp.Controllers.API
             return Ok(list);
         }
 
-        [HttpPost]
+        [HttpPost("tasklist")]
         public async Task<ActionResult> PostTaskList([FromBody] TaskList taskList)
         {
             if(!ModelState.IsValid)
@@ -56,7 +56,7 @@ namespace IMDG_TaskListApp.Controllers.API
             return Ok();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("tasklist/{id}")]
         public async Task<ActionResult> PutTaskList([FromBody] TaskList taskList)
         {
             if(!ModelState.IsValid)
@@ -65,6 +65,56 @@ namespace IMDG_TaskListApp.Controllers.API
             }
 
             _taskListContext.Attach(taskList);
+
+            await _taskListContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpGet("taskitems")]
+        public async Task<ActionResult<List<TaskItem>>> GetTaskItems()
+        {
+            var lists = await _taskListContext.TaskItems
+                                                .Include(x=>x.TaskList)
+                                                .ToListAsync();
+
+            return Ok(lists);
+        }
+
+        [HttpGet("taskitem/{id}")]
+        public async Task<ActionResult<TaskItem>> GetTaskItem(int id)
+        {
+            var list = await _taskListContext.TaskItems
+                                                .Include(x=>x.TaskList)
+                                                .FirstOrDefaultAsync(x=>x.ItemId == id);
+
+            return Ok(list);
+        }
+
+        [HttpPost("taskitem")]
+        public async Task<ActionResult> PostTaskItem([FromBody] TaskItem taskItem)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest("Error in model.");
+            }
+
+            await _taskListContext.TaskItems.AddAsync(taskItem);
+
+            await _taskListContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPut("taskitem/{id}")]
+        public async Task<ActionResult> PutTaskItem([FromBody] TaskItem taskItem)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest("Error in model.");
+            }
+
+            _taskListContext.Attach(taskItem);
 
             await _taskListContext.SaveChangesAsync();
 
