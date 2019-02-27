@@ -54,3 +54,23 @@ body {
   height: 60px;
   line-height: 60px; /* Vertically center the text there */
 }
+
+
+
+/* ----------------- CUSTOM STYLES ---------------------------*/
+body { 	background: url(../images/person.jpg) no-repeat center center fixed; -webkit-background-size: cover; background-size: cover; }
+main { margin: 0; color: #444; font-family: 'Oswald', sans-serif; display: flex; justify-content: center; align-items: center; }
+
+body > header > nav > div > div > ul > li > a { border-bottom: 2px solid white; transition: all 0.5s; }
+body > header > nav > div > div > ul > li > a:hover { border-bottom: 2px solid red; }
+
+
+#taskView.taskPanel { border: 1px solid #ccc; box-shadow: 0 0 10px #444; background-color: white;  padding: 10px; min-width: 350px; height: 500px; text-align:center; }
+	
+#taskView ul { list-style: none; margin: 0; padding: 0; }
+#taskView li { padding: 5px 0px; border-bottom: 1px solid #ccc; }
+#taskView li:hover { background-color: rgba(179, 179, 179, 0.5); text-decoration: line-through;	}
+  
+#taskView #taskContainer { height:200px; overflow-y: auto; border:1px solid #ccc; margin: 20px; margin-top: 20px; box-shadow: 1px 1px 10px inset; }
+  
+#taskView #taskContainer::-webkit-scrollbar { width: 0px; background: transparent; }

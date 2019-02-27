@@ -99,7 +99,15 @@ namespace IMDG_TaskListApp.Controllers.API
                 return BadRequest("Error in model.");
             }
 
-            await _taskListContext.TaskItems.AddAsync(taskItem);
+            var task = new TaskItem();
+            task.Completed = false;
+            //task.CompletedDateTime = new DateTime();
+            task.Description = taskItem.Description;
+            task.TaskList = _taskListContext.TaskLists.FirstOrDefault();
+            task.TaskId = task.TaskList.TaskId;
+            
+
+            await _taskListContext.TaskItems.AddAsync(task);
 
             await _taskListContext.SaveChangesAsync();
 
@@ -117,6 +125,25 @@ namespace IMDG_TaskListApp.Controllers.API
             _taskListContext.Attach(taskItem);
 
             await _taskListContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpDelete("taskitem/{id}")]
+        public async Task<ActionResult> DeleteTaskItem(int id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest("Error in model.");
+            }
+
+            // Get the Task from the database.
+            var task = _taskListContext.TaskItems.Where(x=>x.ItemId == id).FirstOrDefault();
+            if (task != null)
+            {
+                _taskListContext.TaskItems.Remove(task);
+                await _taskListContext.SaveChangesAsync();
+            }
 
             return Ok();
         }

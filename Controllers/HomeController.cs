@@ -20,8 +20,14 @@ namespace IMDG_TaskListApp.Controllers
 
         public IActionResult Index()
         {
+            _taskListContext.Database.Migrate();
             _taskListContext.TaskLists.Add(new TaskList(){Name = "test"});
             _taskListContext.SaveChanges();
+
+           //_task
+
+           // _taskListContext.TaskItems
+
             return View();
         }
 

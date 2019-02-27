@@ -1,8 +1,165 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Task List";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+
+	<div id="taskView" class="taskPanel">
+		<h3>Stuff To Do Today</h3>
+		<hr>
+		<div id="taskContainer" style="">
+			<ul id="taskList">
+			
+			</ul>
+		</div>
+		<label for="newTask">Enter a New Task:</label>
+		<input id="newTask" name="newTask" type="text" style="margin-left:10px;"/>
+           
+        <div style="margin-top:20px; padding:20px; font-size:0.9em; text-align:left; border-top :1px dashed #ccc; color: #777;">
+            <p> Click on a Task to Complete it.  </p>
+            <p> Enter some text and press Enter to Add a Task.</p>
+            <p> Use the mouse wheel to scroll if you have many items.</p>
+        </div>
+       
+	</div>
+
+
+	<script>
+
+		$( document ).ready(function() {
+		
+			var listOfTasks = [ "Clean garage", "Buy Groceries", "Do Laundry" ];
+			
+			// Create the list of tasks
+			var tasks = $('#taskList');	
+			for (let i = 0; i < listOfTasks.length; ++i) {
+				console.log(listOfTasks[i]);
+				
+				$(tasks).append("<li>" + listOfTasks[i] + "</li>")
+			}
+			
+			// Click handler for tasks
+			$(tasks).on("click", function(e) {  
+				//$(e.target).fadeOut(); 
+				RemoveTask(e);
+			});
+					
+			// Click handler for the New Task box
+			$("#newTask").on("blur", function() {
+					var newValue = $('#newTask').val();
+					if (newValue.length > 0)
+					{						
+						AddTask(newValue);
+					}
+			});
+
+			// Keypress handler for the Enter Key
+			$("#newTask").on("keypress", function(e) {
+				if (e.which == 13) {
+					var newValue = $('#newTask').val();
+					if (newValue.length > 0)
+					{						
+						AddTask(newValue);
+					}
+				}
+			});
+
+
+			// Get Tasks
+			GetTasks();
+       
+		});
+
+
+        // Gets the list of tasks from the database and refreshes the task list container.
+        function GetTasks()
+        {
+            var request = {
+                url: "api/TaskListApi/taskitems",
+                contentType: "application/json",                
+                method: "GET",
+                success: function (data) {
+                    console.log("Got list of tasks. ");
+
+					// Create the list of tasks
+					var tasks = $('#taskList');	
+					tasks.empty();					
+					for (let i = 0; i < data[0].taskList.items.length; ++i) {
+						console.log(data[0].taskList.items[i].name + " " + data[0].taskList.items[i].taskId);
+						
+						$(tasks).append("<li data-task-id=" + data[0].taskList.items[i].itemId + ">" + data[0].taskList.items[i].description + "</li>")
+					}
+                },
+                error: function () {
+            		console.log("Issues getting list of tasks. ");
+                }
+            };
+
+             $.ajax(request);         
+
+        }
+
+
+        function AddTask(text)
+        {
+            var model = {
+				ItemId: 0,
+				TaskId: 0,
+            	Description: text,
+				Completed: false,
+				CompletedDateTime: '2011-04-02 17:15:45'				
+         	}; 
+
+			var request = {
+                url: "api/TaskListApi/taskitem",
+                contentType: "application/json",  
+				data: JSON.stringify(model),
+                method: "POST",
+                success: function (data) {
+                    console.log("Added Task ");
+
+					$('#taskList').append("<li>" + text + "</li>");
+					$('#newTask').val("");
+                },
+                error: function () {
+            		console.log("Issues adding task. ");
+                }
+            };
+
+             $.ajax(request);  
+        }
+
+
+		function RemoveTask(el)
+        {
+
+			var taskId = $(el.target).data("task-id");
+			console.log(taskId);
+            
+
+			var request = {
+                url: "api/TaskListApi/taskitem/" + taskId,
+                contentType: "application/json",  
+				//data: JSON.stringify("model"),
+                method: "DELETE",
+                success: function (data) {
+                    console.log("Removed Task ");
+
+					$(el.target).fadeOut(); 					
+                },
+                error: function () {
+            		console.log("Issues removing task. ");
+                }
+            };
+
+             $.ajax(request);  
+        }
+
+
+
+
+
+	</script>
