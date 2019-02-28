@@ -27,10 +27,6 @@ namespace IMDG_TaskListApp.Controllers
                 _taskListContext.TaskLists.Add(new TaskList(){Name = "test"});
                 _taskListContext.SaveChanges();
             }
-            
-           //_task
-
-           // _taskListContext.TaskItems
 
             return View();
         }

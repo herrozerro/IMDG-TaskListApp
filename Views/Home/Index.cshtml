@@ -121,7 +121,7 @@
                 success: function (data) {
                     console.log("Added Task ");
 
-					$('#taskList').append("<li>" + text + "</li>");
+					$('#taskList').append("<li data-task-id=" + data.itemId + ">" + text + "</li>");
 					$('#newTask').val("");
                 },
                 error: function () {

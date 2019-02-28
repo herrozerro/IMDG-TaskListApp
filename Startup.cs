@@ -37,6 +37,12 @@ namespace IMDG_TaskListApp
                 options.UseSqlite(Configuration["SqliteDatabase"])
             );
 
+            // Stop circular reference while serializing JSON
+            services.AddMvc()
+                .AddJsonOptions(
+                    options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

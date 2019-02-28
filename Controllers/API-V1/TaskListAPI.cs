@@ -111,7 +111,7 @@ namespace IMDG_TaskListApp.Controllers.API
 
             await _taskListContext.SaveChangesAsync();
 
-            return Ok();
+            return Ok(task);
         }
 
         [HttpPut("taskitem/{id}")]
