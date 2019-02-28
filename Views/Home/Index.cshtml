@@ -67,9 +67,12 @@
 				}
 			});
 
-
 			// Get Tasks
 			GetTasks();
+
+			setInterval(function() {
+				GetTasks();
+			}, 4000);
        
 		});
 
@@ -77,29 +80,25 @@
         // Gets the list of tasks from the database and refreshes the task list container.
         function GetTasks()
         {
+			// This is our API Call
             var request = {
-                url: "api/TaskListApi/taskitems",
-                contentType: "application/json",                
-                method: "GET",
-                success: function (data) {
-                    console.log("Got list of tasks. ");
-
-					// Create the list of tasks
-					var tasks = $('#taskList');	
-					tasks.empty();					
-					for (let i = 0; i < data[0].taskList.items.length; ++i) {
-						console.log(data[0].taskList.items[i].name + " " + data[0].taskList.items[i].taskId);
-						
+                url: "api/TaskListApi/taskitems",					// URL to the API endpoint
+                contentType: "application/json",                	// Type of data we will be sending
+                method: "GET",										// Type of action we are doing.
+                success: function (data) {							// If we got here, things went well.   
+					console.log("Refreshed Tasklist");
+					// Put the list of tasks on the webpage
+					var tasks = $('#taskList');									// Get the container on the web page that holds our list of tasks.
+					tasks.empty();												// Clear out the task list on our Web Page.
+					for (let i = 0; i < data[0].taskList.items.length; ++i) {	// Put all the tasks back on the page.						
 						$(tasks).append("<li data-task-id=" + data[0].taskList.items[i].itemId + ">" + data[0].taskList.items[i].description + "</li>")
 					}
                 },
-                error: function () {
+                error: function () {								// If we got here, something broke.
             		console.log("Issues getting list of tasks. ");
                 }
             };
-
-             $.ajax(request);         
-
+             $.ajax(request);         // This command sends the request we just defined to the API endpoint (ie "api/TaskListApi/taskitems")
         }
 
 
