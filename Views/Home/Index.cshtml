@@ -29,6 +29,8 @@
 
 	<script>
 
+		var isLoading = false;
+
 		$( document ).ready(function() {
 		
 			var listOfTasks = [ "Clean garage", "Buy Groceries", "Do Laundry" ];
@@ -80,6 +82,12 @@
         // Gets the list of tasks from the database and refreshes the task list container.
         function GetTasks()
         {
+			if(isLoading){
+				return;
+			}
+
+			isLoading = true;
+
 			// This is our API Call
             var request = {
                 url: "api/TaskListApi/taskitems",					// URL to the API endpoint
@@ -93,9 +101,11 @@
 					for (let i = 0; i < data[0].taskList.items.length; ++i) {	// Put all the tasks back on the page.						
 						$(tasks).append("<li data-task-id=" + data[0].taskList.items[i].itemId + ">" + data[0].taskList.items[i].description + "</li>")
 					}
+					isLoading = false;
                 },
                 error: function () {								// If we got here, something broke.
             		console.log("Issues getting list of tasks. ");
+					isLoading = false;
                 }
             };
              $.ajax(request);         // This command sends the request we just defined to the API endpoint (ie "api/TaskListApi/taskitems")
